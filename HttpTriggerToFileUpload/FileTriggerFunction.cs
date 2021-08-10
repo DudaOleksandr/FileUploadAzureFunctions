@@ -1,14 +1,12 @@
-using System;
 using System.IO;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
-namespace FileUploadMonitor
+namespace HttpTriggerToFileUpload
 {
-    public static class Function1
+    public static class FileTriggerFunction
     {
-        [FunctionName("Function1")]
+        [FunctionName("FileTriggerFunction")]
         public static void Run([BlobTrigger("file-storage/{name}", Connection = "ConnectionString")]Stream myBlob, string name, ILogger log)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
