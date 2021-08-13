@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Xml;
 using Common.Enums;
 using Common.Exceptions;
@@ -12,18 +14,20 @@ namespace FileUploadMonitor.Core.Parsers
 {
     public class XmlParser : IFileParser
     {
-        public IEnumerable<TransactionDto> ParseFile(IFormFile file)
+        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
         {
             var transactionsList = new List<TransactionDto>();
             var exceptionList = new List<ValidationException>();
             var xDoc = new XmlDocument();
-            xDoc.Load(file.OpenReadStream());
+            var byteArray = Encoding.UTF8.GetBytes(fileBody);
+            var stream = new MemoryStream(byteArray);
+            xDoc.Load(stream);
             var xRoot = xDoc.DocumentElement;
             var transactionCounter = 0;
 
             if (xRoot == null)
             {
-                throw new ValidationException("Invalid file structure", nameof(file));
+                throw new ValidationException("Invalid file structure", fileName);
             }
             foreach (XmlNode node in xRoot)
             {

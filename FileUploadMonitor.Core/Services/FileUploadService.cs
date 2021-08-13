@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
 using FileUploadMonitor.Core.Parsers;
+using MimeMapping;
 
 
 namespace FileUploadMonitor.Core.Services
@@ -25,15 +26,15 @@ namespace FileUploadMonitor.Core.Services
             _maxFileSizeMb = config.GetValue<int>("MaxFileSizeMb");
         }
 
-        public IEnumerable<TransactionDto> UploadFile(IFormFile file)
+        public IEnumerable<TransactionDto> UploadFile(string fileBody, string fileName)
         {
-            if (!IsFileSizeValid(file))
+            /*if (!IsFileSizeValid(fileBody))
             {
-                throw new Exception("File size is invalid");
-            }
-            var parser = GetFileParser(file);
+                throw new ValidationException("File size is invalid", nameof(fileBody));
+            }*/
+            var parser = GetFileParser(fileName);
 
-            return _transactionsService.Save(parser.ParseFile(file).ToList());
+            return _transactionsService.Save(parser.ParseFile(fileBody, fileName).ToList());
         }
 
         public Task<List<OutputTransactionDto>> GetTransactions(string currency, string status, string dateFrom, string dateTo)
@@ -41,10 +42,12 @@ namespace FileUploadMonitor.Core.Services
             return _transactionsService.Get(currency,status,dateFrom,dateTo);
         }
 
-        private static IFileParser GetFileParser(IFormFile file)
+        private static IFileParser GetFileParser(string fileName)
         {
-            var type = file.ContentType.Split('/').Last();
-            if (Enum.TryParse(type, true, out FileType fileType))
+            var rr = fileName.Split('.').Last();
+            var contentType = MimeUtility.GetExtensions(rr);
+            //var type = contentType[0].Split('/').Last();
+            if (Enum.TryParse(rr, true, out FileType fileType))
             {
                 switch (fileType)
                 {
@@ -59,9 +62,9 @@ namespace FileUploadMonitor.Core.Services
             throw new ValidationException("Unknown format", nameof(fileType));
         }
 
-        private bool IsFileSizeValid(IFormFile file)
+        private bool IsFileSizeValid(string file)
         {
-            return file.Length < _maxFileSizeMb * 1048576 && file.Length > 0;
+            return System.Text.Encoding.Unicode.GetByteCount(file) < _maxFileSizeMb * 1048576 && file.Length > 0;
         }
     }
 }

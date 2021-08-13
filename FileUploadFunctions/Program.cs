@@ -1,7 +1,5 @@
-using Microsoft.Azure.Functions.Worker.Configuration;
-using Microsoft.Extensions.Configuration;
+using FileUploadMonitor.Infrastructure;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
 
 namespace FileUploadFunctions
 {
@@ -11,6 +9,10 @@ namespace FileUploadFunctions
         {
             var host = new HostBuilder()
                 .ConfigureFunctionsWorkerDefaults()
+                .ConfigureServices(services =>
+                {
+                    services.AddInfrastructureServices();
+                })
                 .Build();
 
             host.Run();

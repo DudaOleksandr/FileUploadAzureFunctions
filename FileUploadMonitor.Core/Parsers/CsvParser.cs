@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Common.Enums;
 using Common.Exceptions;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace FileUploadMonitor.Core.Parsers
 {
     public class CsvParser : IFileParser
     {
-        public IEnumerable<TransactionDto> ParseFile(IFormFile file)
+        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
         {
             var transactionsList = new List<TransactionDto>();
             var exceptionList = new List<ValidationException>();
-            using var reader = new StreamReader(file.OpenReadStream());
+            var fileSplits = fileBody.Split("\n");
             var transactionCounter = 0;
-            while (!reader.EndOfStream)
+            foreach (var line in fileSplits)
             {
                 var parserPattern = "\"([^\"]*)\"";
                 var options = RegexOptions.Multiline;
-                var splits = Regex.Matches(reader.ReadLine(), parserPattern, options).Select(x => x.Value.Replace("\"","")).ToList();
+                var splits = Regex.Matches(line, parserPattern, options).Select(x => x.Value.Replace("\"", "")).ToList();
+
                 if (splits.Count != 5)
                 {
                     throw new ValidationException("There is invalid file structure", nameof(splits));
@@ -39,7 +38,7 @@ namespace FileUploadMonitor.Core.Parsers
                 var currencyCode = splits[2];
 
                 if (!DateTime.TryParseExact(splits[3], "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture,
-            DateTimeStyles.None, out var dateTime))
+                    DateTimeStyles.None, out var dateTime))
                 {
                     exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(dateTime)}"));
                     continue;
@@ -61,7 +60,7 @@ namespace FileUploadMonitor.Core.Parsers
 
                 transactionCounter++;
             }
-
+            
             if(exceptionList.Count > 0)
             {
                 throw new ValidationAggregationException("Transaction creation error", exceptionList);

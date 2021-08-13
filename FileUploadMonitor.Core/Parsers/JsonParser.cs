@@ -14,17 +14,12 @@ namespace FileUploadMonitor.Core.Parsers
     public class JsonParser : IFileParser
     {
         private List<ValidationException> _exceptionList;
-        public IEnumerable<TransactionDto> ParseFile(IFormFile file)
+        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
         {
             var transactionsList = new List<TransactionDto>();
             _exceptionList = new List<ValidationException>();
-            var jsonTransaction = new StringBuilder((int)file.Length);
-            using var reader = new StreamReader(file.OpenReadStream());
+            var jsonTransaction = new StringBuilder(fileBody);
             var options = RegexOptions.Multiline;
-            while (!reader.EndOfStream)
-            {
-                jsonTransaction.Append(reader.ReadLine());
-            }
             var parserPattern = "\\{[^}]*\\}";
             var splits = Regex.Matches(jsonTransaction.ToString(), parserPattern, options).Select(x => x.Value).ToList();
 

@@ -7,6 +7,6 @@ namespace FileUploadMonitor.Core.Interfaces
 {
     public interface IFileParser
     {
-       public IEnumerable<TransactionDto> ParseFile(IFormFile file); 
+       public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName); 
     }
 }
