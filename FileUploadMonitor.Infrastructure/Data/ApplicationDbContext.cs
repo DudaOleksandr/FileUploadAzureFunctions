@@ -1,9 +1,5 @@
-﻿using System;
-using System.Net;
-using FileUploadMonitor.Domain.Entities;
-using Microsoft.Azure.Cosmos;
+﻿using FileUploadMonitor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace FileUploadMonitor.Infrastructure.Data
 {
@@ -15,6 +11,7 @@ namespace FileUploadMonitor.Infrastructure.Data
 
         private readonly string _databaseName;
 
+        public bool UseCosmosDb = false;
 
         public DbSet<Transaction> Transactions { get; set; }
 
@@ -28,10 +25,19 @@ namespace FileUploadMonitor.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseLazyLoadingProxies()
-                //.UseSqlServer(_connectionStringSql)
-                .UseCosmos(_connectionStringCosmos, _databaseName);
+            if (UseCosmosDb)
+            {
+                optionsBuilder
+                    .UseLazyLoadingProxies()
+                    .UseCosmos(_connectionStringCosmos, _databaseName);
+            }
+            else
+            {
+                optionsBuilder
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(_connectionStringSql);
+            }
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
