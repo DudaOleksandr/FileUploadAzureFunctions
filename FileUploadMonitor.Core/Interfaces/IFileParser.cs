@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using FileUploadMonitor.Core.Dtos;
-using Microsoft.AspNetCore.Http;
 
 
 namespace FileUploadMonitor.Core.Interfaces

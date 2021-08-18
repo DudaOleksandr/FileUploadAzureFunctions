@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Enums;
 using Common.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;

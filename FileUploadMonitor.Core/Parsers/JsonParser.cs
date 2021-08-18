@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Common.Exceptions;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace FileUploadMonitor.Core.Parsers

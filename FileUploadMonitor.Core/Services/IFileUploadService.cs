@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FileUploadMonitor.Core.Dtos;
-using Microsoft.AspNetCore.Http;
 
 namespace FileUploadMonitor.Core.Services
 {

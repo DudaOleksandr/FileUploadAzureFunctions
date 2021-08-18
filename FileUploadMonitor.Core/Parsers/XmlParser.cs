@@ -8,7 +8,6 @@ using Common.Enums;
 using Common.Exceptions;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace FileUploadMonitor.Core.Parsers
 {
