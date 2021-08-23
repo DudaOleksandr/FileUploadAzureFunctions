@@ -24,7 +24,7 @@ namespace FileUploadMonitor.Core.Services
             _transactionsService = transactionsService;
         }
 
-        public IEnumerable<TransactionDto> UploadFile(string fileBody, string fileName)
+        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
         {
             if (!IsFileSizeValid(fileBody))
             {
@@ -32,14 +32,21 @@ namespace FileUploadMonitor.Core.Services
             }
             var parser = GetFileParser(fileName);
 
-            return _transactionsService.Save(parser.ParseFile(fileBody, fileName).ToList());
+            return parser.ParseFile(fileBody, fileName).ToList();
         }
+
+        
 
         public Task<List<OutputTransactionDto>> GetTransactions(string currency, string status, string dateFrom, string dateTo)
         {
             return _transactionsService.Get(currency,status,dateFrom,dateTo);
         }
-            
+
+        public void SaveFile(IEnumerable<TransactionDto> transactions)
+        {
+            _transactionsService.Save(transactions.ToList());
+        }
+
         private static IFileParser GetFileParser(string fileName)
         {
             var rr = fileName.Split('.').Last();

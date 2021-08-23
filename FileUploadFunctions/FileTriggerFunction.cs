@@ -28,7 +28,7 @@ namespace FileUploadFunctions
             try
             {
                 var res =
-                    JsonConvert.SerializeObject(_fileUploadService.UploadFile(myBlob, name), Formatting.Indented);
+                    JsonConvert.SerializeObject(_fileUploadService.ParseFile(myBlob, name), Formatting.Indented);
                 logger.LogInformation(res);
                 return res;
             }

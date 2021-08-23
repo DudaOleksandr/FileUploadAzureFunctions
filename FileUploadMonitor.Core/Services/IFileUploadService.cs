@@ -6,7 +6,9 @@ namespace FileUploadMonitor.Core.Services
 {
     public interface IFileUploadService
     {
-       public IEnumerable<TransactionDto> UploadFile(string fileBody, string fileName);
+       public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName);
        public Task<List<OutputTransactionDto>>GetTransactions(string currency, string status, string dateFrom, string dateTo);
+
+       public void SaveFile(IEnumerable<TransactionDto> transactions);
     }
 }

@@ -10,7 +10,7 @@ namespace FileUploadFunctions
         public static void Run([ServiceBusTrigger("fileupload", Connection = "ServiceBusConnectionRead")] string myQueueItem, FunctionContext context)
         {
             var logger = context.GetLogger("ServiceBusTriggerFunction");
-            logger.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+            logger.LogInformation(myQueueItem);
         }
     }
 }
