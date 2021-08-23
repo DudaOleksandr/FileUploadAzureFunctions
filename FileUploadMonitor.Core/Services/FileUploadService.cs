@@ -15,22 +15,21 @@ namespace FileUploadMonitor.Core.Services
 {
     public class FileUploadService : IFileUploadService
     {
-        private readonly int _maxFileSizeMb;
+        private const int MaxFileSizeMb = 1;
 
         private readonly ITransactionsService _transactionsService;
 
-        public FileUploadService(IConfiguration config, ITransactionsService transactionsService)
+        public FileUploadService(ITransactionsService transactionsService)
         {
             _transactionsService = transactionsService;
-            _maxFileSizeMb = config.GetValue<int>("MaxFileSizeMb");
         }
 
         public IEnumerable<TransactionDto> UploadFile(string fileBody, string fileName)
         {
-            /*if (!IsFileSizeValid(fileBody))
+            if (!IsFileSizeValid(fileBody))
             {
                 throw new ValidationException("File size is invalid", nameof(fileBody));
-            }*/
+            }
             var parser = GetFileParser(fileName);
 
             return _transactionsService.Save(parser.ParseFile(fileBody, fileName).ToList());
@@ -40,11 +39,11 @@ namespace FileUploadMonitor.Core.Services
         {
             return _transactionsService.Get(currency,status,dateFrom,dateTo);
         }
-
+            
         private static IFileParser GetFileParser(string fileName)
         {
             var rr = fileName.Split('.').Last();
-            var contentType = MimeUtility.GetExtensions(rr);
+            //var contentType = MimeUtility.GetExtensions(rr);
             //var type = contentType[0].Split('/').Last();
             if (Enum.TryParse(rr, true, out FileType fileType))
             {
@@ -63,7 +62,7 @@ namespace FileUploadMonitor.Core.Services
 
         private bool IsFileSizeValid(string file)
         {
-            return System.Text.Encoding.Unicode.GetByteCount(file) < _maxFileSizeMb * 1048576 && file.Length > 0;
+            return file.Length is < MaxFileSizeMb * 1048576 and > 0;
         }
     }
 }

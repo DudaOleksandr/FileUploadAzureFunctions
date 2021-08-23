@@ -11,7 +11,7 @@ namespace FileUploadMonitor.Infrastructure.Data
 
         private readonly string _databaseName;
 
-        public bool UseCosmosDb = false;
+        public bool UseCosmosDb = true;
 
         public DbSet<Transaction> Transactions { get; set; }
 

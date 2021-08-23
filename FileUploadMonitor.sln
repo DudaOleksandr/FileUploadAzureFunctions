@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{D1CEC46D-C05E-4898-BF5C-244688833C63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{D1CEC46D-C05E-4898-BF5C-244688833C63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUploadMonitor.Domain", "FileUploadMonitor.Domain\FileUploadMonitor.Domain.csproj", "{86F2F978-0683-4FA3-B42B-5B9DCC691678}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadMonitor.Domain", "FileUploadMonitor.Domain\FileUploadMonitor.Domain.csproj", "{86F2F978-0683-4FA3-B42B-5B9DCC691678}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUploadMonitor.Core", "FileUploadMonitor.Core\FileUploadMonitor.Core.csproj", "{A7A09776-BEA3-4764-8F87-4AF4EA27428E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadMonitor.Core", "FileUploadMonitor.Core\FileUploadMonitor.Core.csproj", "{A7A09776-BEA3-4764-8F87-4AF4EA27428E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUploadFunctions", "FileUploadFunctions\FileUploadFunctions.csproj", "{4E13BA77-BE6E-42B8-9C3B-81DA0E40C8FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadFunctions", "FileUploadFunctions\FileUploadFunctions.csproj", "{4E13BA77-BE6E-42B8-9C3B-81DA0E40C8FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUploadMonitor.Infrastructure", "FileUploadMonitor.Infrastructure\FileUploadMonitor.Infrastructure.csproj", "{64B7E9A9-BEB3-494A-BADB-8CDBA18105F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadMonitor.Infrastructure", "FileUploadMonitor.Infrastructure\FileUploadMonitor.Infrastructure.csproj", "{64B7E9A9-BEB3-494A-BADB-8CDBA18105F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

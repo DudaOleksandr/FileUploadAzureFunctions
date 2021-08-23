@@ -18,7 +18,8 @@ namespace FileUploadFunctions
         }
 
         [Function("FileTriggerFunction")]
-        public void Run(
+        [ServiceBusOutput("fileupload", Connection = "ServiceBusConnectionWrite")]
+        public string Run(
             [BlobTrigger("file-storage/{name}", Connection = "ConnectionString")] string  myBlob, string name,
             FunctionContext context)
         {
@@ -26,8 +27,10 @@ namespace FileUploadFunctions
 
             try
             {
-                var res = _fileUploadService.UploadFile(myBlob, name);
-                logger.LogInformation(JsonConvert.SerializeObject(res, Formatting.Indented));
+                var res =
+                    JsonConvert.SerializeObject(_fileUploadService.UploadFile(myBlob, name), Formatting.Indented);
+                logger.LogInformation(res);
+                return res;
             }
             catch (ValidationAggregationException validationAggregationException)
             {
@@ -43,7 +46,8 @@ namespace FileUploadFunctions
             {
                 logger.LogInformation(JsonConvert.SerializeObject(new {ex.Message, ex.Source }, Formatting.Indented));
             }
-            
+
+            return string.Empty;
         }
     }
 }
