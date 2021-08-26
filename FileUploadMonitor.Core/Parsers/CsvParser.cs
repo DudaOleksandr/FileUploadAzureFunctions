@@ -12,61 +12,61 @@ namespace FileUploadMonitor.Core.Parsers
 {
     public class CsvParser : IFileParser
     {
-        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
+        public IEnumerable<string> ParseFile(string fileBody, string fileName)
         {
-            var transactionsList = new List<TransactionDto>();
-            var exceptionList = new List<ValidationException>();
-            var fileSplits = fileBody.Split("\n");
-            var transactionCounter = 0;
-            foreach (var line in fileSplits)
+            if (fileBody.Length > 1)
             {
-                var parserPattern = "\"([^\"]*)\"";
-                var options = RegexOptions.Multiline;
-                var splits = Regex.Matches(line, parserPattern, options).Select(x => x.Value.Replace("\"", "")).ToList();
-
-                if (splits.Count != 5)
+                var fileSplits = fileBody.Split("\n");
+                for (var i = 1; i < fileSplits.Length + 1; i++)
                 {
-                    throw new ValidationException("There is invalid file structure", nameof(splits));
-                }
-                var transaction = splits[0];
-
-                if (!decimal.TryParse(splits[1], out var amount))
-                {
-                    exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(amount)}"));
-                    continue;
-                }
-                var currencyCode = splits[2];
-
-                if (!DateTime.TryParseExact(splits[3], "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture,
-                    DateTimeStyles.None, out var dateTime))
-                {
-                    exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(dateTime)}"));
-                    continue;
-                }
-                if (!Enum.TryParse(splits[4], true, out StatusType status))
-                {
-                    exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(status)}"));
-                    continue;
+                    fileSplits[i] = $"{i} - {i}, {fileName}";
                 }
 
-                transactionsList.Add(new TransactionDto
-                {
-                    TransactionId = transaction,
-                    Amount = amount,
-                    CurrencyCode = currencyCode,
-                    TransactionDate = dateTime,
-                    Status = status
-                });
-
-                transactionCounter++;
-            }
-            
-            if(exceptionList.Count > 0)
-            {
-                throw new ValidationAggregationException("Transaction creation error", exceptionList);
+                return fileSplits;
             }
 
-            return transactionsList;
+            throw new ValidationException("File was null", nameof(fileBody));
+
+
+        }
+
+        public TransactionDto ParseTransaction(string transactionBody)
+        {
+
+            var parserPattern = "\"([^\"]*)\"";
+            var options = RegexOptions.Multiline;
+            var splits = Regex.Matches(transactionBody, parserPattern, options).Select(x => x.Value.Replace("\"", "")).ToList();
+
+            if (splits.Count != 5)
+            {
+                throw new ValidationException("There is invalid file structure", nameof(splits));
+            }
+            var transaction = splits[0];
+
+            if (!decimal.TryParse(splits[1], out var amount))
+            {
+                throw new ValidationException("Invalid value", $"transaction.{transaction}.{nameof(amount)}");
+            }
+            var currencyCode = splits[2];
+
+            if (!DateTime.TryParseExact(splits[3], "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out var dateTime))
+            {
+                throw new ValidationException("Invalid value", $"transaction.{transaction}.{nameof(dateTime)}");
+            }
+            if (!Enum.TryParse(splits[4], true, out StatusType status))
+            {
+                throw new ValidationException("Invalid value", $"transaction.{transaction}.{nameof(status)}");
+            }
+            return new TransactionDto
+            {
+                TransactionId = transaction,
+                Amount = amount,
+                CurrencyCode = currencyCode,
+                TransactionDate = dateTime,
+                Status = status
+            };
+
         }
     }
 }

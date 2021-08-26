@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Enums;
 using Common.Exceptions;
-using Microsoft.Extensions.Configuration;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
 using FileUploadMonitor.Core.Parsers;
-using MimeMapping;
 
 
 namespace FileUploadMonitor.Core.Services
@@ -24,7 +22,7 @@ namespace FileUploadMonitor.Core.Services
             _transactionsService = transactionsService;
         }
 
-        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
+        public IEnumerable<string> ParseFile(string fileBody, string fileName)
         {
             if (!IsFileSizeValid(fileBody))
             {
@@ -35,7 +33,13 @@ namespace FileUploadMonitor.Core.Services
             return parser.ParseFile(fileBody, fileName).ToList();
         }
 
-        
+        public TransactionDto ParseTransaction(string transactionBody)
+        {
+            var transactionInfo = transactionBody.Split(",");
+            var parser = GetFileParser(transactionInfo.Last());
+            return parser.ParseTransaction(transactionInfo.First());
+        }
+
 
         public Task<List<OutputTransactionDto>> GetTransactions(string currency, string status, string dateFrom, string dateTo)
         {

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Azure.Messaging.ServiceBus;
 using Common.Exceptions;
 using FileUploadMonitor.Core.Services;
 using Microsoft.Azure.Functions.Worker;
@@ -19,17 +21,15 @@ namespace FileUploadFunctions
 
         [Function("FileTriggerFunction")]
         [ServiceBusOutput("fileupload", Connection = "ServiceBusConnectionWrite")]
-        public string Run(
+        public IEnumerable<string> Run(
             [BlobTrigger("file-storage/{name}", Connection = "ConnectionString")] string  myBlob, string name,
             FunctionContext context)
-        {
-            var logger = context.GetLogger("FileTriggerFunction");
 
+        { 
+            var logger = context.GetLogger("FileTriggerFunction");
             try
             {
-                var res =
-                    JsonConvert.SerializeObject(_fileUploadService.ParseFile(myBlob, name), Formatting.Indented);
-                logger.LogInformation(res);
+                var res = _fileUploadService.ParseFile(myBlob, name);
                 return res;
             }
             catch (ValidationAggregationException validationAggregationException)
@@ -40,14 +40,16 @@ namespace FileUploadFunctions
                 {
                     logger.LogInformation(JsonConvert.SerializeObject(new {error.Message, error.Source}, Formatting.Indented));
                 }
-                
+
+                throw;
             }
             catch (Exception ex)
             {
                 logger.LogInformation(JsonConvert.SerializeObject(new {ex.Message, ex.Source }, Formatting.Indented));
+                throw;
             }
 
-            return string.Empty;
+            
         }
     }
 }
