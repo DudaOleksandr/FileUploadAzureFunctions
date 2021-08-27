@@ -37,16 +37,16 @@ namespace FileUploadMonitor.Core.Parsers
             throw new NotImplementedException();
         }
 
-        public TransactionDto ParseTransaction(string transactionBody)
+        public TransactionDto ParseTransaction(string transactionInfo, string fileBody)
         {
             var xDoc = new XmlDocument();
-            var byteArray = Encoding.UTF8.GetBytes(transactionBody);
+            var byteArray = Encoding.UTF8.GetBytes(transactionInfo);
             var stream = new MemoryStream(byteArray);
             xDoc.Load(stream);
             var xRoot = xDoc.DocumentElement;
             if (xRoot == null)
             {
-                throw new ValidationException("Invalid file structure", nameof(transactionBody));
+                throw new ValidationException("Invalid file structure", nameof(transactionInfo));
             }
 
             var transaction = new TransactionDto();

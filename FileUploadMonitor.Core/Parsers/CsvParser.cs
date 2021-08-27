@@ -19,23 +19,30 @@ namespace FileUploadMonitor.Core.Parsers
                 var fileSplits = fileBody.Split("\n");
                 for (var i = 1; i < fileSplits.Length + 1; i++)
                 {
-                    fileSplits[i] = $"{i} - {i}, {fileName}";
+                    fileSplits[i - 1] = $"{i} - {i}, {fileName}";
                 }
-
                 return fileSplits;
             }
-
             throw new ValidationException("File was null", nameof(fileBody));
-
-
         }
 
-        public TransactionDto ParseTransaction(string transactionBody)
+        public TransactionDto ParseTransaction(string transactionInfo, string fileBody)
         {
+            if (!int.TryParse(transactionInfo.Split("-").First(), out var firstLine) &&
+                !int.TryParse(transactionInfo.Split("-").First(), out var secondLine))
+            {
+                throw new ValidationException("Unable to parse lines", nameof(transactionInfo));
+            }
 
+            var fileSplits = fileBody.Split("\n");
+
+            if (firstLine > fileSplits.Length)
+            {
+                throw new ValidationException("There is no such line in file", nameof(firstLine));
+            }
             var parserPattern = "\"([^\"]*)\"";
             var options = RegexOptions.Multiline;
-            var splits = Regex.Matches(transactionBody, parserPattern, options).Select(x => x.Value.Replace("\"", "")).ToList();
+            var splits = Regex.Matches(fileSplits[firstLine - 1], parserPattern, options).Select(x => x.Value.Replace("\"", "")).ToList();
 
             if (splits.Count != 5)
             {
@@ -66,7 +73,6 @@ namespace FileUploadMonitor.Core.Parsers
                 TransactionDate = dateTime,
                 Status = status
             };
-
         }
     }
 }

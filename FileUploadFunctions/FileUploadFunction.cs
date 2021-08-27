@@ -10,7 +10,8 @@ namespace FileUploadFunctions
 {
     public static class FileUploadFunction
     {
-        private static readonly CloudStorageAccount CloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=parserfileupload;AccountKey=Ge66MVT4eijCK5xSFUa7D/LdjsrDpxofy+8xBfkf26+fqOdjUNTOIEX/i+A6h3yU4qbZ27EXb4TO+GGfoTISSA==;EndpointSuffix=core.windows.net");
+        private static readonly CloudStorageAccount CloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("ConnectionString"));
+        //private static readonly CloudStorageAccount CloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=parserfileupload;AccountKey=Ge66MVT4eijCK5xSFUa7D/LdjsrDpxofy+8xBfkf26+fqOdjUNTOIEX/i+A6h3yU4qbZ27EXb4TO+GGfoTISSA==;EndpointSuffix=core.windows.net");
 
 
         [Function("FileUploadFunction")]

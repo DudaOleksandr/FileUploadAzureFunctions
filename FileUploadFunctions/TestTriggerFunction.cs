@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
 
 namespace FileUploadFunctions
 {
@@ -64,5 +63,7 @@ namespace FileUploadFunctions
             var response = req.CreateResponse(HttpStatusCode.OK);
             return response;
         }
+
+        
     }
 }

@@ -23,10 +23,10 @@ namespace FileUploadMonitor.Core.Parsers
             return splits;
         }
 
-        public TransactionDto ParseTransaction(string transactionBody)
+        public TransactionDto ParseTransaction(string transactionInfo, string fileBody)
         {
             var transaction = JsonConvert.DeserializeObject<TransactionDto>(
-                transactionBody,
+                transactionInfo,
                 new JsonSerializerSettings
                 {
                     Error = HandleDeserializationError

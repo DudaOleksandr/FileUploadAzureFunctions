@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using Common.Enums;
 using Common.Exceptions;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
 using FileUploadMonitor.Core.Parsers;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 
 
 namespace FileUploadMonitor.Core.Services
@@ -36,8 +40,9 @@ namespace FileUploadMonitor.Core.Services
         public TransactionDto ParseTransaction(string transactionBody)
         {
             var transactionInfo = transactionBody.Split(",");
+            var fileBody = GetBlob( transactionInfo.Last());
             var parser = GetFileParser(transactionInfo.Last());
-            return parser.ParseTransaction(transactionInfo.First());
+            return parser.ParseTransaction(transactionInfo.First(), fileBody.Result);
         }
 
 
@@ -74,6 +79,25 @@ namespace FileUploadMonitor.Core.Services
         private bool IsFileSizeValid(string file)
         {
             return file.Length is < MaxFileSizeMb * 1048576 and > 0;
+        }
+
+        private async Task<string> GetBlob(string fileName)
+        {
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+
+            var containerName = "file-storage";
+
+            var blobServiceClient = new BlobServiceClient(connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var blobClient = containerClient.GetBlobClient(fileName.Replace(" ",""));
+            if (await blobClient.ExistsAsync())
+            {
+                var response = await blobClient.DownloadAsync();
+                using var streamReader = new StreamReader(response.Value.Content);
+                return await streamReader.ReadToEndAsync();
+            }
+
+            throw new ValidationException("Blob does not exist", nameof(blobClient));
         }
     }
 }
