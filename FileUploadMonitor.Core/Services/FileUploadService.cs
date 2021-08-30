@@ -9,8 +9,6 @@ using Common.Exceptions;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
 using FileUploadMonitor.Core.Parsers;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 
 
 namespace FileUploadMonitor.Core.Services
@@ -42,7 +40,13 @@ namespace FileUploadMonitor.Core.Services
             var transactionInfo = transactionBody.Split(",");
             var fileBody = GetBlob( transactionInfo.Last());
             var parser = GetFileParser(transactionInfo.Last());
-            return parser.ParseTransaction(transactionInfo.First(), fileBody.Result);
+            var res = parser.ParseTransaction(transactionInfo.First(), fileBody.Result);
+
+            //TODO replace this with single object of TransactionDto
+
+            _transactionsService.Save(new List<TransactionDto> {res}.ToList());
+
+            return res;
         }
 
 
@@ -59,8 +63,6 @@ namespace FileUploadMonitor.Core.Services
         private static IFileParser GetFileParser(string fileName)
         {
             var rr = fileName.Split('.').Last();
-            //var contentType = MimeUtility.GetExtensions(rr);
-            //var type = contentType[0].Split('/').Last();
             if (Enum.TryParse(rr, true, out FileType fileType))
             {
                 switch (fileType)
@@ -83,7 +85,7 @@ namespace FileUploadMonitor.Core.Services
 
         private async Task<string> GetBlob(string fileName)
         {
-            var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+            var connectionString = Environment.GetEnvironmentVariable("AzureConnectionString");
 
             var containerName = "file-storage";
 

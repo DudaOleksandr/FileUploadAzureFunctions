@@ -1,15 +1,14 @@
 using FileUploadMonitor.Core.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace FileUploadFunctions
 {
     public class ServiceBusTriggerFunction
     {
-
         private readonly IFileUploadService _fileUploadService;
 
-    
         public ServiceBusTriggerFunction(IFileUploadService fileUploadService)
         {
             _fileUploadService = fileUploadService;
@@ -20,9 +19,7 @@ namespace FileUploadFunctions
         {
             var logger = context.GetLogger("ServiceBusTriggerFunction");
             var res = _fileUploadService.ParseTransaction(myQueueItem);
-            logger.LogInformation($"\n \n New Message received: \n {myQueueItem} \n");
-            logger.LogInformation($"\n \n transactionOutput: \n {res}");
-
+            logger.LogInformation($"\n \n New Message received: \n {myQueueItem} \n \n \n transaction output: \n {JsonConvert.SerializeObject(res)}");
         }
     }
 }
