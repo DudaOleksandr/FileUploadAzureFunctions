@@ -43,12 +43,8 @@ namespace FileUploadFunctions
             var res = _fileUploadService.ParseFile(myBlob, name).ToList();
             foreach (var message in res)
             {
-                if (!messageBatch.TryAddMessage(new ServiceBusMessage(message)))
-                {
-                    throw new Exception($"The message {message} is too large to fit in the batch.");
-                }
+                await _sender.SendMessageAsync(new ServiceBusMessage($"{message.From}-{message.To},{message.FileName}"));
             }
-
             try
             {
                 await _sender.SendMessagesAsync(messageBatch);

@@ -13,7 +13,7 @@ namespace FileUploadMonitor.Core.Parsers
 {
     public class XmlParser : IFileParser
     {
-        public IEnumerable<string> ParseFile(string fileBody, string fileName)
+        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName)
         {
             var exceptionList = new List<ValidationException>();
             var xDoc = new XmlDocument();
@@ -34,10 +34,11 @@ namespace FileUploadMonitor.Core.Parsers
             }
 
             //TODO Add logic to get lines of transaction from body
-            throw new NotImplementedException();
+            throw new NotImplementedException("XML type is not supported yet");
+
         }
 
-        public TransactionDto ParseTransaction(string transactionInfo, string fileBody)
+        public IEnumerable<TransactionDto> ParseTransaction(string transactionInfo, string fileBody)
         {
             var xDoc = new XmlDocument();
             var byteArray = Encoding.UTF8.GetBytes(transactionInfo);
@@ -115,8 +116,9 @@ namespace FileUploadMonitor.Core.Parsers
                     }
                 }
             }
+            throw new NotImplementedException("XML type is not supported yet");
 
-            return transaction;
+            //return transaction;
         }
     }
 }

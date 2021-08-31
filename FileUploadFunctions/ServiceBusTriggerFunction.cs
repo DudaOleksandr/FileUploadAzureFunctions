@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FileUploadMonitor.Core.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -15,10 +16,10 @@ namespace FileUploadFunctions
         }
 
         [Function("ServiceBusTriggerFunction")]
-        public void Run([ServiceBusTrigger("fileupload", Connection = "ServiceBusConnectionRead")] string myQueueItem, FunctionContext context)
+        public async Task Run([ServiceBusTrigger("fileupload", Connection = "ServiceBusConnectionRead")] string myQueueItem, FunctionContext context)
         {
             var logger = context.GetLogger("ServiceBusTriggerFunction");
-            var res = _fileUploadService.ParseTransaction(myQueueItem);
+            var res = await _fileUploadService.ParseTransaction(myQueueItem);
             logger.LogInformation($"\n \n New Message received: \n {myQueueItem} \n \n \n transaction output: \n {JsonConvert.SerializeObject(res)}");
         }
     }

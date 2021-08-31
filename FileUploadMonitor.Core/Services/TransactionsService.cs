@@ -16,7 +16,7 @@ namespace FileUploadMonitor.Core.Services
             _transactionRepository = transactionRepository;
         }
 
-        public IEnumerable<TransactionDto> Save(List<TransactionDto> transactionModels)
+        public async Task<IEnumerable<TransactionDto>> Save(List<TransactionDto> transactionModels)
         {
             var transactionList = new List<Transaction>();
             foreach (var transactionModel in transactionModels)
@@ -31,7 +31,7 @@ namespace FileUploadMonitor.Core.Services
                 };
                 transactionList.Add(transaction);
             }
-            _transactionRepository.AddRange(transactionList);
+            await _transactionRepository.AddRange(transactionList);
             return transactionModels;
         }
 

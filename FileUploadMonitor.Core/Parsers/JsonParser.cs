@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,7 +12,7 @@ namespace FileUploadMonitor.Core.Parsers
 {
     public class JsonParser : IFileParser
     {
-        public IEnumerable<string> ParseFile(string fileBody, string fileName)
+        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName)
         {
             var jsonTransaction = new StringBuilder(fileBody);
             var options = RegexOptions.Multiline;
@@ -19,11 +20,11 @@ namespace FileUploadMonitor.Core.Parsers
             var splits = Regex.Matches(jsonTransaction.ToString(), parserPattern, options).Select(x => x.Value).ToList();
 
             //TODO Add logic to get lines of transaction from body
-            
-            return splits;
+            throw new NotImplementedException("Json type is not supported yet");
+            //return splits;
         }
 
-        public TransactionDto ParseTransaction(string transactionInfo, string fileBody)
+        public IEnumerable<TransactionDto> ParseTransaction(string transactionInfo, string fileBody)
         {
             var transaction = JsonConvert.DeserializeObject<TransactionDto>(
                 transactionInfo,
@@ -32,8 +33,9 @@ namespace FileUploadMonitor.Core.Parsers
                     Error = HandleDeserializationError
                 }
             );
+            throw new NotImplementedException("Json type is not supported yet");
 
-            return transaction;
+            // transaction;
         }
 
         private void HandleDeserializationError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs errorArgs)

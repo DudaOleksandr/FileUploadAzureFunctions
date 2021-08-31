@@ -24,7 +24,7 @@ namespace FileUploadMonitor.Core.Services
             _transactionsService = transactionsService;
         }
 
-        public IEnumerable<string> ParseFile(string fileBody, string fileName)
+        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName)
         {
             if (!IsFileSizeValid(fileBody))
             {
@@ -35,18 +35,16 @@ namespace FileUploadMonitor.Core.Services
             return parser.ParseFile(fileBody, fileName).ToList();
         }
 
-        public TransactionDto ParseTransaction(string transactionBody)
+        public async Task<List<TransactionDto>> ParseTransaction(string transactionBody)
         {
             var transactionInfo = transactionBody.Split(",");
             var fileBody = GetBlob( transactionInfo.Last());
             var parser = GetFileParser(transactionInfo.Last());
             var res = parser.ParseTransaction(transactionInfo.First(), fileBody.Result);
+            var transactionDtos = res.ToList();
+             await _transactionsService.Save(transactionDtos.ToList());
 
-            //TODO replace this with single object of TransactionDto
-
-            _transactionsService.Save(new List<TransactionDto> {res}.ToList());
-
-            return res;
+            return transactionDtos.ToList();
         }
 
 
