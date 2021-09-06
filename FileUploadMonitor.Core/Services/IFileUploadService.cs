@@ -7,10 +7,10 @@ namespace FileUploadMonitor.Core.Services
     public interface IFileUploadService
     {
        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName);
+       
+       public List<TransactionDto> ParseTransaction(string transactionBody);
 
-       public Task<List<TransactionDto>> ParseTransaction(string transactionBody);
-
-        public Task<List<OutputTransactionDto>>GetTransactions(string currency, string status, string dateFrom, string dateTo);
+       public Task<List<OutputTransactionDto>>GetTransactions(string currency, string status, string dateFrom, string dateTo);
 
        public void SaveFile(IEnumerable<TransactionDto> transactions);
     }

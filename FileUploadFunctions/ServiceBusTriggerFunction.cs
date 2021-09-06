@@ -19,7 +19,7 @@ namespace FileUploadFunctions
         public async Task Run([ServiceBusTrigger("fileupload", Connection = "ServiceBusConnectionRead")] string myQueueItem, FunctionContext context)
         {
             var logger = context.GetLogger("ServiceBusTriggerFunction");
-            var res = await _fileUploadService.ParseTransaction(myQueueItem);
+            var res = _fileUploadService.ParseTransaction(myQueueItem);
             logger.LogInformation($"\n \n New Message received: \n {myQueueItem} \n \n \n transaction output: \n {JsonConvert.SerializeObject(res)}");
         }
     }

@@ -1,31 +1,24 @@
-﻿using FileUploadMonitor.Domain.Entities;
+﻿using System;
+using FileUploadMonitor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FileUploadMonitor.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly string _connectionStringSql;
+        private readonly string _connectionStringSql = Environment.GetEnvironmentVariable("ConnectionStringSql");
 
-        private readonly string _connectionStringCosmos;
+        private readonly string _connectionStringCosmos = Environment.GetEnvironmentVariable("ConnectionStringCosmos");
 
-        private readonly string _databaseName;
+        private readonly string _databaseName = Environment.GetEnvironmentVariable("DatabaseName");
 
-        public bool UseCosmosDb = true;
+        public readonly bool _useCosmosDb = true;
 
         public DbSet<Transaction> Transactions { get; set; }
-
-        public ApplicationDbContext()
-        {
-            _connectionStringCosmos = "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
-            _connectionStringSql =
-                "Data Source=tcp:localhost,1433;Database=TransactionDB; Integrated Security=False;User ID=SA;Password=Prosto1234;";
-            _databaseName = "TransactionDb";
-        }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (UseCosmosDb)
+            if (_useCosmosDb)
             {
                 optionsBuilder
                     .UseLazyLoadingProxies()
@@ -37,7 +30,6 @@ namespace FileUploadMonitor.Infrastructure.Data
                     .UseLazyLoadingProxies()
                     .UseSqlServer(_connectionStringSql);
             }
-            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

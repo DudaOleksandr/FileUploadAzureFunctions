@@ -38,17 +38,13 @@ namespace FileUploadFunctions
 
             _client = new ServiceBusClient(ConnectionString);
             _sender = _client.CreateSender(QueueName);
-            using var messageBatch = await _sender.CreateMessageBatchAsync();
-           
-            var res = _fileUploadService.ParseFile(myBlob, name).ToList();
-            foreach (var message in res)
-            {
-                await _sender.SendMessageAsync(new ServiceBusMessage($"{message.From}-{message.To},{message.FileName}"));
-            }
             try
             {
-                await _sender.SendMessagesAsync(messageBatch);
-                Console.WriteLine($"A batch of {res.Count} messages has been published to the queue.");
+                var res = _fileUploadService.ParseFile(myBlob, name).ToList();
+                foreach (var message in res)
+                {
+                    await _sender.SendMessageAsync(new ServiceBusMessage($"{message.From}-{message.To},{message.FileName}"));
+                }
             }
             catch (ValidationAggregationException validationAggregationException)
             {

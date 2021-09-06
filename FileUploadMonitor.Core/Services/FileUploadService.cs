@@ -15,7 +15,7 @@ namespace FileUploadMonitor.Core.Services
 {
     public class FileUploadService : IFileUploadService
     {
-        private const int MaxFileSizeMb = 1;
+        private static readonly int MaxFileSizeMb = int.Parse(Environment.GetEnvironmentVariable("MaxFileSizeMb") ?? "0");
 
         private readonly ITransactionsService _transactionsService;
 
@@ -35,16 +35,15 @@ namespace FileUploadMonitor.Core.Services
             return parser.ParseFile(fileBody, fileName).ToList();
         }
 
-        public async Task<List<TransactionDto>> ParseTransaction(string transactionBody)
+        public List<TransactionDto> ParseTransaction(string transactionBody)
         {
             var transactionInfo = transactionBody.Split(",");
             var fileBody = GetBlob( transactionInfo.Last());
             var parser = GetFileParser(transactionInfo.Last());
             var res = parser.ParseTransaction(transactionInfo.First(), fileBody.Result);
-            var transactionDtos = res.ToList();
-             await _transactionsService.Save(transactionDtos.ToList());
+            _transactionsService.Save(res.ToList());
 
-            return transactionDtos.ToList();
+            return res.ToList();
         }
 
 
@@ -78,15 +77,13 @@ namespace FileUploadMonitor.Core.Services
 
         private bool IsFileSizeValid(string file)
         {
-            return file.Length is < MaxFileSizeMb * 1048576 and > 0;
+            return file.Length < MaxFileSizeMb * 1048576 && MaxFileSizeMb > 0;
         }
 
         private async Task<string> GetBlob(string fileName)
         {
             var connectionString = Environment.GetEnvironmentVariable("AzureConnectionString");
-
             var containerName = "file-storage";
-
             var blobServiceClient = new BlobServiceClient(connectionString);
             var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
             var blobClient = containerClient.GetBlobClient(fileName.Replace(" ",""));
