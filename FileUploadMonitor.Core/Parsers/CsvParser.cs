@@ -49,26 +49,19 @@ namespace FileUploadMonitor.Core.Parsers
             return messageBatchList;
         }
 
-        public IEnumerable<TransactionDto> ParseTransaction(string transactionInfo, string fileBody)
+        public IEnumerable<TransactionDto> ParseTransaction(int from, int to, string fileBody)
         {
-            if (!int.TryParse(transactionInfo.Split("-").First(), out var firstLine))
-            {
-                throw new ValidationException("Unable to parse lines", nameof(transactionInfo));
-            }
-            if (!int.TryParse(transactionInfo.Split("-")[1], out var secondLine))
-            {
-                throw new ValidationException("Unable to parse lines", nameof(transactionInfo));
-            }
+            
             var transactionsList = new List<TransactionDto>();
             var fileSplits = fileBody.Split("\n");
 
-            if (firstLine > fileSplits.Length)
+            if (from > fileSplits.Length)
             {
-                throw new ValidationException("There is no such line in file", nameof(firstLine));
+                throw new ValidationException("There is no such line in file", nameof(from));
             }
             var parserPattern = "\"([^\"]*)\"";
             var options = RegexOptions.Multiline;
-            for (int i = firstLine; i < secondLine; i++)
+            for (int i = from; i < to; i++)
             {
                 var splits = Regex.Matches(fileSplits[i], parserPattern, options)
                     .Select(x => x.Value.Replace("\"", "")).ToList();

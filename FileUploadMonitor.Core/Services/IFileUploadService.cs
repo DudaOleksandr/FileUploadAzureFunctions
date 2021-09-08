@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FileUploadMonitor.Core.Dtos;
+using FileUploadMonitor.Core.Interfaces;
 
 namespace FileUploadMonitor.Core.Services
 {
@@ -8,10 +9,11 @@ namespace FileUploadMonitor.Core.Services
     {
        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName);
        
-       public List<TransactionDto> ParseTransaction(string transactionBody);
-
        public Task<List<OutputTransactionDto>>GetTransactions(string currency, string status, string dateFrom, string dateTo);
 
        public void SaveFile(IEnumerable<TransactionDto> transactions);
+
+       public  IFileParser GetFileParser(string fileName);
+
     }
 }

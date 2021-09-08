@@ -8,6 +8,6 @@ namespace FileUploadMonitor.Core.Interfaces
     {
        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName);
 
-       public IEnumerable<TransactionDto> ParseTransaction(string transactionInfo, string fileBody);
+       public IEnumerable<TransactionDto> ParseTransaction(int from, int to, string fileBody);
     }
 }

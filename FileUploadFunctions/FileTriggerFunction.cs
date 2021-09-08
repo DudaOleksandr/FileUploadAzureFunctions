@@ -43,24 +43,21 @@ namespace FileUploadFunctions
                 var res = _fileUploadService.ParseFile(myBlob, name).ToList();
                 foreach (var message in res)
                 {
-                    await _sender.SendMessageAsync(new ServiceBusMessage($"{message.From}-{message.To},{message.FileName}"));
+                    await _sender.SendMessageAsync(new ServiceBusMessage(JsonConvert.SerializeObject(message, Formatting.Indented)));
                 }
             }
             catch (ValidationAggregationException validationAggregationException)
             {
-                logger.LogInformation(JsonConvert.SerializeObject(validationAggregationException.Message, Formatting.Indented));
+                logger.LogInformation(validationAggregationException.Message);
 
                 foreach (var error in validationAggregationException.Exceptions)
                 {
-                    logger.LogInformation(JsonConvert.SerializeObject(new { error.Message, error.Source }, Formatting.Indented));
+                    logger.LogInformation(error.Message);
                 }
-
-                throw;
             }
             catch (Exception ex)
             {
-                logger.LogInformation(JsonConvert.SerializeObject(new { ex.Message, ex.Source }, Formatting.Indented));
-                throw;
+                logger.LogInformation(ex.Message);
             }
             finally
             {
