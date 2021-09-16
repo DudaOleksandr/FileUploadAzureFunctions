@@ -12,9 +12,6 @@ namespace FileUploadMonitor.Core
             services.AddTransient<ITransactionsService, TransactionsService>();
             
             services.AddTransient<IBlobService, BlobService>();
-
-            services.AddTransient<ITransactionParseService, TransactionParseService>();
-
         }
     }
 }

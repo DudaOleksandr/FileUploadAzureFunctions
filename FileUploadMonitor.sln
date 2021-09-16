@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadFunctions", "File
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileUploadMonitor.Infrastructure", "FileUploadMonitor.Infrastructure\FileUploadMonitor.Infrastructure.csproj", "{64B7E9A9-BEB3-494A-BADB-8CDBA18105F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUploadMonitor.Tests", "FileUploadMonitor.Tests\FileUploadMonitor.Tests.csproj", "{A571ADDD-B741-4C7E-B6A0-8ED0ADACA42A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{64B7E9A9-BEB3-494A-BADB-8CDBA18105F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64B7E9A9-BEB3-494A-BADB-8CDBA18105F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64B7E9A9-BEB3-494A-BADB-8CDBA18105F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A571ADDD-B741-4C7E-B6A0-8ED0ADACA42A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A571ADDD-B741-4C7E-B6A0-8ED0ADACA42A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A571ADDD-B741-4C7E-B6A0-8ED0ADACA42A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A571ADDD-B741-4C7E-B6A0-8ED0ADACA42A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

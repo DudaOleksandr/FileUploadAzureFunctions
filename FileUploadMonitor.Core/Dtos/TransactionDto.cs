@@ -7,7 +7,6 @@ namespace FileUploadMonitor.Core.Dtos
 {
     public class TransactionDto
     {
-
         [JsonProperty("transaction_id")]
         public string TransactionId { get; set; }
 
@@ -22,5 +21,7 @@ namespace FileUploadMonitor.Core.Dtos
         
         [JsonProperty("status")]
         public StatusType? Status { get; set; }
+        
+        
     }
 }

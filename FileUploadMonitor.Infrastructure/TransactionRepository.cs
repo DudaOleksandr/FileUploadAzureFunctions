@@ -29,7 +29,6 @@ namespace FileUploadMonitor.Infrastructure
                 .ToListAsync();
             
             return transactions;
-
         }
 
         public void Add(Transaction entity)

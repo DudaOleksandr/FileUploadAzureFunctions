@@ -30,17 +30,16 @@ namespace FileUploadFunctions
 
         [Function("FileTriggerFunction")]
         public async Task Run(
-            [BlobTrigger("file-storage/{name}", Connection = "AzureConnectionString")] string  myBlob, string name,
+            [BlobTrigger("file-storage/{name}", Connection = "AzureConnectionString")] string fileContent, string name,
             FunctionContext context)
 
         {
             var logger = context.GetLogger("FileTriggerFunction");
-
             _client = new ServiceBusClient(ConnectionString);
             _sender = _client.CreateSender(QueueName);
             try
             {
-                var res = _fileUploadService.ParseFile(myBlob, name).ToList();
+                var res = _fileUploadService.ParseFile(fileContent, name).ToList();
                 foreach (var message in res)
                 {
                     await _sender.SendMessageAsync(new ServiceBusMessage(JsonConvert.SerializeObject(message, Formatting.Indented)));
