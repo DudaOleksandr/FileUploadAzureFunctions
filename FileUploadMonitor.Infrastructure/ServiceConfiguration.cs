@@ -2,7 +2,6 @@
 using FileUploadMonitor.Domain.Interfaces;
 using FileUploadMonitor.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
-using Transactions.Infrastructure;
 
 namespace FileUploadMonitor.Infrastructure
 {

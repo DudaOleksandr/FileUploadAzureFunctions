@@ -11,7 +11,7 @@ namespace FileUploadMonitor.Domain.Interfaces
 
         void Add(Transaction entity);
 
-        void AddRange(IEnumerable<Transaction> entities);
+        Task AddRange(IEnumerable<Transaction> entities);
 
         void Delete(Transaction entity);
         

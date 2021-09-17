@@ -1,3 +1,4 @@
+using Common.Middleware;
 using FileUploadMonitor.Infrastructure;
 using Microsoft.Extensions.Hosting;
 

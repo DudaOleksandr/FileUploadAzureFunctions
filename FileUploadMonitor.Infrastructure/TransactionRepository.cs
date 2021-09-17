@@ -29,7 +29,6 @@ namespace FileUploadMonitor.Infrastructure
                 .ToListAsync();
             
             return transactions;
-
         }
 
         public void Add(Transaction entity)
@@ -38,10 +37,10 @@ namespace FileUploadMonitor.Infrastructure
             _context.SaveChanges();
         }
 
-        public void AddRange(IEnumerable<Transaction> entities)
+        public async Task AddRange(IEnumerable<Transaction> entities)
         {
-            _context.AddRange(entities);
-            _context.SaveChanges();
+            await _context.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
         }
 
         public void Delete(Transaction entity)

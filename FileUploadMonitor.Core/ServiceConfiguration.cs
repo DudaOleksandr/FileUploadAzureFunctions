@@ -8,8 +8,10 @@ namespace FileUploadMonitor.Core
         public static void AddCoreServices(this IServiceCollection services)
         {
             services.AddTransient<IFileUploadService, FileUploadService>();
-
+            
             services.AddTransient<ITransactionsService, TransactionsService>();
+            
+            services.AddTransient<IBlobService, BlobService>();
         }
     }
 }

@@ -1,27 +1,41 @@
-﻿using FileUploadMonitor.Domain.Entities;
+﻿using System;
+using FileUploadMonitor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace FileUploadMonitor.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly string _connectionString;
+        private readonly string _connectionStringSql = Environment.GetEnvironmentVariable("ConnectionStringSql");
+
+        private readonly string _connectionStringCosmos = Environment.GetEnvironmentVariable("ConnectionStringCosmos");
+
+        private readonly string _databaseName = Environment.GetEnvironmentVariable("DatabaseName");
+
+        public readonly bool _useCosmosDb = true;
 
         public DbSet<Transaction> Transactions { get; set; }
-
-        public ApplicationDbContext()
-        {
-            _connectionString =
-                "Data Source=tcp:localhost,1433;Database=TransactionDB; Integrated Security=False;User ID=SA;Password=Prosto1234;";
-        }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseLazyLoadingProxies()
-                .UseSqlServer(_connectionString);
+            if (_useCosmosDb)
+            {
+                optionsBuilder
+                    .UseLazyLoadingProxies()
+                    .UseCosmos(_connectionStringCosmos, _databaseName);
+            }
+            else
+            {
+                optionsBuilder
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(_connectionStringSql);
+            }
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Transaction>()
+                .ToContainer("Transactions").HasPartitionKey("CurrencyCode");
+        }
     }
 }

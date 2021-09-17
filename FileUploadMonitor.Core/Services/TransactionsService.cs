@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Domain.Entities;
@@ -10,13 +11,13 @@ namespace FileUploadMonitor.Core.Services
     class TransactionsService : ITransactionsService
     {
         private readonly ITransactionRepository _transactionRepository;
-
+        
         public TransactionsService(ITransactionRepository transactionRepository)
         {
             _transactionRepository = transactionRepository;
         }
-
-        public IEnumerable<TransactionDto> Save(List<TransactionDto> transactionModels)
+        
+        public async Task<IEnumerable<TransactionDto>> Save(List<TransactionDto> transactionModels)
         {
             var transactionList = new List<Transaction>();
             foreach (var transactionModel in transactionModels)
@@ -31,7 +32,7 @@ namespace FileUploadMonitor.Core.Services
                 };
                 transactionList.Add(transaction);
             }
-            _transactionRepository.AddRange(transactionList);
+            await _transactionRepository.AddRange(transactionList);
             return transactionModels;
         }
 
@@ -64,6 +65,7 @@ namespace FileUploadMonitor.Core.Services
 
             return outputList;
         }
+        
         private static string StatusTypeSlicing(string status)
         {
             return status switch

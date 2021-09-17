@@ -1,20 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using HttpMultipartParser;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using Microsoft.Extensions.Logging;
 
 namespace FileUploadFunctions
 {
     public static class FileUploadFunction
     {
-        private static readonly CloudStorageAccount CloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=parserfileupload;AccountKey=Ge66MVT4eijCK5xSFUa7D/LdjsrDpxofy+8xBfkf26+fqOdjUNTOIEX/i+A6h3yU4qbZ27EXb4TO+GGfoTISSA==;EndpointSuffix=core.windows.net");
-
+        private static readonly CloudStorageAccount CloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureConnectionString"));
 
         [Function("FileUploadFunction")]
         public static HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req,

@@ -4,49 +4,48 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Enums;
 using Common.Exceptions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using FileUploadMonitor.Core.Dtos;
 using FileUploadMonitor.Core.Interfaces;
 using FileUploadMonitor.Core.Parsers;
-using MimeMapping;
 
 
 namespace FileUploadMonitor.Core.Services
 {
     public class FileUploadService : IFileUploadService
     {
-        private readonly int _maxFileSizeMb;
+        private static readonly int MaxFileSizeMb = int.Parse(Environment.GetEnvironmentVariable("MaxFileSizeMb") ?? "1");
 
         private readonly ITransactionsService _transactionsService;
-
-        public FileUploadService(IConfiguration config, ITransactionsService transactionsService)
+        
+        public FileUploadService(ITransactionsService transactionsService)
         {
             _transactionsService = transactionsService;
-            _maxFileSizeMb = config.GetValue<int>("MaxFileSizeMb");
         }
 
-        public IEnumerable<TransactionDto> UploadFile(string fileBody, string fileName)
+        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName)
         {
-            /*if (!IsFileSizeValid(fileBody))
+            if (!IsFileSizeValid(fileBody))
             {
                 throw new ValidationException("File size is invalid", nameof(fileBody));
-            }*/
+            }
             var parser = GetFileParser(fileName);
 
-            return _transactionsService.Save(parser.ParseFile(fileBody, fileName).ToList());
+            return parser.ParseFile(fileBody, fileName).ToList();
         }
-
+        
         public Task<List<OutputTransactionDto>> GetTransactions(string currency, string status, string dateFrom, string dateTo)
         {
             return _transactionsService.Get(currency,status,dateFrom,dateTo);
         }
 
-        private static IFileParser GetFileParser(string fileName)
+        public void SaveFile(IEnumerable<TransactionDto> transactions)
+        {
+            _transactionsService.Save(transactions.ToList());
+        }
+
+        public IFileParser GetFileParser(string fileName)
         {
             var rr = fileName.Split('.').Last();
-            var contentType = MimeUtility.GetExtensions(rr);
-            //var type = contentType[0].Split('/').Last();
             if (Enum.TryParse(rr, true, out FileType fileType))
             {
                 switch (fileType)
@@ -64,7 +63,7 @@ namespace FileUploadMonitor.Core.Services
 
         private bool IsFileSizeValid(string file)
         {
-            return System.Text.Encoding.Unicode.GetByteCount(file) < _maxFileSizeMb * 1048576 && file.Length > 0;
+            return file.Length < MaxFileSizeMb * 1048576 && MaxFileSizeMb > 0;
         }
     }
 }

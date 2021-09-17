@@ -12,41 +12,82 @@ namespace FileUploadMonitor.Core.Parsers
 {
     public class CsvParser : IFileParser
     {
-        public IEnumerable<TransactionDto> ParseFile(string fileBody, string fileName)
+        public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName)
         {
-            var transactionsList = new List<TransactionDto>();
-            var exceptionList = new List<ValidationException>();
-            var fileSplits = fileBody.Split("\n");
-            var transactionCounter = 0;
-            foreach (var line in fileSplits)
+            if (fileBody.Length < 1)
             {
-                var parserPattern = "\"([^\"]*)\"";
-                var options = RegexOptions.Multiline;
-                var splits = Regex.Matches(line, parserPattern, options).Select(x => x.Value.Replace("\"", "")).ToList();
+                throw new ValidationException("File was null", nameof(fileBody));
+            }
+            var fileSplits = fileBody.Split("\n");
+            var piece = (int)(0.5f + 100f * 10 / fileSplits.Length);
+            var messageBatchList = new List<TransactionBatchEventDto>();
+            var fromLine = 0;
+            var toLine = 0;
+            if (fileBody.Length > 1)
+            {
+                for (var i = 0; i < fileSplits.Length; i++)
+                {
+                    if (toLine - fromLine == piece)
+                    {
+                        messageBatchList.Add(new TransactionBatchEventDto
+                        {
+                            From = fromLine,
+                            To = toLine,
+                            FileName = fileName
+                        });
+                        fromLine = toLine + 1;
+                    }
+                    toLine++;
+                }
+            }
+            messageBatchList.Add(new TransactionBatchEventDto
+            {
+                From = fromLine,
+                To = toLine,
+                FileName = fileName
+            });
+            return messageBatchList;
+        }
 
+        public IEnumerable<TransactionDto> ParseTransaction(int from, int to, string fileBody)
+        {
+            
+            var transactionsList = new List<TransactionDto>();
+            var fileSplits = fileBody.Split("\n");
+
+            if (from > fileSplits.Length)
+            {
+                throw new ValidationException("There is no such line in file", nameof(from));
+            }
+            var parserPattern = "\"([^\"]*)\"";
+            var options = RegexOptions.Multiline;
+            for (int i = from; i < to; i++)
+            {
+                var splits = Regex.Matches(fileSplits[i], parserPattern, options)
+                    .Select(x => x.Value.Replace("\"", "")).ToList();
                 if (splits.Count != 5)
                 {
                     throw new ValidationException("There is invalid file structure", nameof(splits));
                 }
+
                 var transaction = splits[0];
 
                 if (!decimal.TryParse(splits[1], out var amount))
                 {
-                    exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(amount)}"));
-                    continue;
+                    throw new ValidationException("Invalid value", $"transaction.{transaction}.{nameof(amount)}");
                 }
+
                 var currencyCode = splits[2];
 
                 if (!DateTime.TryParseExact(splits[3], "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture,
                     DateTimeStyles.None, out var dateTime))
                 {
-                    exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(dateTime)}"));
-                    continue;
+                    throw new ValidationException("Invalid value", $"transaction.{transaction}.{nameof(dateTime)}");
                 }
+
                 if (!Enum.TryParse(splits[4], true, out StatusType status))
                 {
-                    exceptionList.Add(new ValidationException("Invalid value", $"transaction.{transactionCounter}.{nameof(status)}"));
-                    continue;
+                    throw new ValidationException("Invalid value", $"transaction.{transaction}.{nameof(status)}");
                 }
 
                 transactionsList.Add(new TransactionDto
@@ -57,15 +98,8 @@ namespace FileUploadMonitor.Core.Parsers
                     TransactionDate = dateTime,
                     Status = status
                 });
-
-                transactionCounter++;
             }
             
-            if(exceptionList.Count > 0)
-            {
-                throw new ValidationAggregationException("Transaction creation error", exceptionList);
-            }
-
             return transactionsList;
         }
     }
