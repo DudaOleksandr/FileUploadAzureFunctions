@@ -26,8 +26,7 @@ namespace FileUploadMonitor.Core.Parsers
             {
                 throw new ValidationException("Invalid file structure", fileName);
             }
-
-
+            
             if (exceptionList.Count > 0)
             {
                 throw new ValidationAggregationException("Transaction creation error", exceptionList);

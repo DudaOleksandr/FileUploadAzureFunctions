@@ -14,10 +14,9 @@ namespace FileUploadMonitor.Core.Parsers
     {
         public IEnumerable<TransactionBatchEventDto> ParseFile(string fileBody, string fileName)
         {
-            var jsonTransaction = new StringBuilder(fileBody);
             var options = RegexOptions.Multiline;
             var parserPattern = "\\{[^}]*\\}";
-            var splits = Regex.Matches(jsonTransaction.ToString(), parserPattern, options).Select(x => x.Value).ToList();
+            var splits = Regex.Matches(fileBody, parserPattern, options).Select(x => x.Value).ToList();
 
             //TODO Add logic to get lines of transaction from body
             throw new NotImplementedException("Json type is not supported yet");
