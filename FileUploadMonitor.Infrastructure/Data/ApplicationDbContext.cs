@@ -14,7 +14,7 @@ namespace FileUploadMonitor.Infrastructure.Data
 
         public readonly bool _useCosmosDb = true;
 
-        public DbSet<Transaction> Transactions { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
