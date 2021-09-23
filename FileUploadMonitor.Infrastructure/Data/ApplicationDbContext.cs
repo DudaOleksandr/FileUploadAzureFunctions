@@ -12,7 +12,7 @@ namespace FileUploadMonitor.Infrastructure.Data
 
         private readonly string _databaseName = Environment.GetEnvironmentVariable("DatabaseName");
 
-        public readonly bool _useCosmosDb = false;
+        private readonly bool _useCosmosDb = bool.TryParse(Environment.GetEnvironmentVariable("UseCosmosDb"), out bool value) && value;
         
         public virtual DbSet<Transaction> Transactions { get; set; }
 

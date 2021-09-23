@@ -17,7 +17,7 @@ namespace FileUploadMonitor.Core.Dtos
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -27,12 +27,12 @@ namespace FileUploadMonitor.Core.Dtos
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj is not TransactionBatchEventDto objDto)
             {
                 return false;
             }
 
-            return Equals((TransactionBatchEventDto)obj);
+            return Equals(objDto);
         }
 
         public override int GetHashCode()

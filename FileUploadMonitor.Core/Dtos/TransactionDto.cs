@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Common.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -22,26 +21,6 @@ namespace FileUploadMonitor.Core.Dtos
         
         [JsonProperty("status")]
         public StatusType? Status { get; set; }
-        
-        /*public override bool Equals(object other)
-        {
-            // If the passed object is null
-            if (other == null)
-            {
-                return false;
-            }
-            if (!(other is TransactionDto))
-            {
-                return false;
-            }
-            return TransactionId.Equals((TransactionDto)other.TransactionId)
-                   && Amount.Equals(other.Amount)
-                   && CurrencyCode.Equals(other.CurrencyCode) 
-                   && TransactionDate.Equals(other.TransactionDate) 
-                   && Status.Equals(other.Status);
-            return (this.FirstName == ((Customer)obj).FirstName)
-                   && (this.LastName == ((Customer)obj).LastName);
-        }*/
 
         protected bool Equals(TransactionDto other)
         {
@@ -50,22 +29,22 @@ namespace FileUploadMonitor.Core.Dtos
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
-
+            
             if (ReferenceEquals(this, obj))
             {
                 return true;
             }
 
-            if (obj.GetType() != typeof(TransactionDto))
+            if (obj is not TransactionDto objDto)
             {
                 return false;
             }
 
-            return Equals((TransactionDto)obj);
+            return Equals(objDto);
         }
 
         public override int GetHashCode()

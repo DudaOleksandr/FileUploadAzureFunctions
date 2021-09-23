@@ -63,11 +63,11 @@ namespace FileUploadMonitor.Tests
             var from = 14;
             var to = 0;
             var parser = new CsvParser();
-            var expectedException = new ValidationException("There is no such line in file", "from");
+            var expectedExceptionMessage = "There is no such line in file";
            
             ValidationException actualException =
                 Assert.Throws<ValidationException>(() => parser.ParseTransaction(from, to, fileBody));
-            Assert.Equal(expectedException.Message, actualException.Message);
+            Assert.Equal(expectedExceptionMessage, actualException.Message);
         }
         
         [Fact]

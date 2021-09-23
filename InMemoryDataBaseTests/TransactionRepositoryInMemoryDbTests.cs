@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Common.Enums;
-using Common.Exceptions;
 using FileUploadMonitor.Domain.Entities;
 using FileUploadMonitor.Infrastructure;
 using FileUploadMonitor.Infrastructure.Data;
@@ -27,10 +26,6 @@ namespace InMemoryDataBaseTests
         
         public TestsBase()
         {
-            DbContextOptionsBuilder<ApplicationDbContext> dbContextOptions =
-                new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseLazyLoadingProxies()
-                    .UseInMemoryDatabase("TestDb");
             _context = new FakeDbContext();
             _context.Database.EnsureCreated();
             TransactionRepository = new TransactionRepository(_context);
