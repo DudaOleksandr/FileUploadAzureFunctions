@@ -53,6 +53,5 @@ namespace FileUploadMonitor.Infrastructure
         {
             return _context.Transactions.FirstOrDefault(e => e.Id == id);
         }
-
     }
 }

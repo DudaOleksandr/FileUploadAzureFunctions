@@ -25,7 +25,7 @@ namespace FileUploadMonitor.Core.Services
                 var transaction = new Transaction
                 {
                     Id = transactionModel.TransactionId,
-                    TransactionDate = (DateTime)transactionModel.TransactionDate,
+                    TransactionDate = transactionModel.TransactionDate,
                     Status = transactionModel.Status.ToString(),
                     CurrencyCode = transactionModel.CurrencyCode,
                     Amount = (decimal)transactionModel.Amount
