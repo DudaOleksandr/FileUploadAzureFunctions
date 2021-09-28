@@ -21,7 +21,7 @@ namespace FileUploadMonitor.Infrastructure
 
         public Task<List<Transaction>> GetAll(string currency, string status, DateTime? dateFrom, DateTime? dateTo)
         {
-            var transactions = _context.Transactions
+            Task<List<Transaction>> transactions = _context.Transactions
                 .WhereIf(currency is not null, t => t.CurrencyCode == currency)
                 .WhereIf(status is not null, t => t.Status == status)
                 .WhereIf(dateFrom is not null && dateTo is not null, t => dateFrom < t.TransactionDate && t.TransactionDate < dateTo)
@@ -39,7 +39,7 @@ namespace FileUploadMonitor.Infrastructure
 
         public async Task AddRange(IEnumerable<Transaction> entities)
         {
-            await _context.AddRangeAsync(entities);
+            await _context.Transactions.AddRangeAsync(entities);
             await _context.SaveChangesAsync();
         }
 
@@ -53,6 +53,5 @@ namespace FileUploadMonitor.Infrastructure
         {
             return _context.Transactions.FirstOrDefault(e => e.Id == id);
         }
-
     }
 }
